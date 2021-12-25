@@ -45,7 +45,7 @@ public class FuncionarioController
     }
     
     @GetMapping("/{id}")
-    public Optional<Funcionario>  listaFuncionarioPorId(@PathVariable Integer id)
+    public Optional<Funcionario> listaFuncionarioPorId(@PathVariable Integer id)
     {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
 
@@ -56,7 +56,6 @@ public class FuncionarioController
     @Transactional
     public ResponseEntity<FuncionarioDto> atualizar(@RequestBody @Valid FuncionarioForm form, @PathVariable Integer id)
     {
-        System.out.println("entrou");
         Funcionario funcionario = form.atualizarFuncionario(id, funcionarioRepository);
 
         if(Objects.nonNull(funcionario))
@@ -73,7 +72,6 @@ public class FuncionarioController
         List<Funcionario> funcionarios = funcionarioRepository.findAll();
 
         Integer idFuncionario = 1 + funcionarios.size();
-
 
         Funcionario funcionario = funcionarioForm.converterFuncionario(idFuncionario, cargoRepository);
 
