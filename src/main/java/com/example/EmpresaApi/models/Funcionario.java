@@ -14,8 +14,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Funcionario
 {
-    @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
 	private String cpf;
@@ -24,12 +24,17 @@ public class Funcionario
 	@JoinColumn(name = "cargo_id" , nullable = false)
     private Cargo cargo;
 
-	public Funcionario(String nome, Cargo cargo, String cpf, Double salario)
+	public Funcionario()
 	{
+
+	}
+	public Funcionario(Integer id ,String nome, Cargo cargo, String cpf)
+	{
+		this.id = id;
 		this.nome = nome;
 		this.cargo = cargo;
 		this.cpf = cpf;
-		this.salario = salario;
+		this.salario = 5000.0;
 	}
    
     public Integer getId() {

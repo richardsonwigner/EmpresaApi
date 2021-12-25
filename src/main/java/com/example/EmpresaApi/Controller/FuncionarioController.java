@@ -2,6 +2,7 @@ package com.example.EmpresaApi.Controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -15,7 +16,9 @@ import com.example.EmpresaApi.models.Funcionario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,32 +44,38 @@ public class FuncionarioController
         return funcionarios;
     }
     
-    @PostMapping
-    @Transactional
-    public Funcionario listaFuncionarioPorNome(@RequestBody @Valid FuncionarioForm form)
+    @GetMapping("/{id}")
+    public Optional<Funcionario>  listaFuncionarioPorId(@PathVariable Integer id)
     {
-        Funcionario funcionario = funcionarioRepository.findByNome(form.getNomeFuncionario());
+        Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
 
         return funcionario;
     }
 
-    public ResponseEntity<FuncionarioDto> atualizar(@RequestBody @Valid FuncionarioForm form)
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<FuncionarioDto> atualizar(@RequestBody @Valid FuncionarioForm form, @PathVariable Integer id)
     {
-        Funcionario funcionario = funcionarioRepository.findByNome(form.getNomeFuncionario());
+        System.out.println("entrou");
+        Funcionario funcionario = form.atualizarFuncionario(id, funcionarioRepository);
 
-        if(funcionario != null)
+        if(Objects.nonNull(funcionario))
         {
-            funcionario = form.atualizarFuncionario(funcionario.getId(), funcionarioRepository);
             return ResponseEntity.ok(new FuncionarioDto(funcionario));
         }
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping
+    @PostMapping
     @Transactional
-    public ResponseEntity<FuncionarioDto> cadastrar(FuncionarioForm funcionarioForm, UriComponentsBuilder uriBuilder)
+    public ResponseEntity<FuncionarioDto> cadastrar(@RequestBody @Valid FuncionarioForm funcionarioForm, UriComponentsBuilder uriBuilder)
     {   
-        Funcionario funcionario = funcionarioForm.converterFuncionario(cargoRepository);
+        List<Funcionario> funcionarios = funcionarioRepository.findAll();
+
+        Integer idFuncionario = 1 + funcionarios.size();
+
+
+        Funcionario funcionario = funcionarioForm.converterFuncionario(idFuncionario, cargoRepository);
 
         funcionarioRepository.save(funcionario);
 
@@ -75,7 +84,9 @@ public class FuncionarioController
         return ResponseEntity.created(uri).body(new FuncionarioDto(funcionario));
     }
 
-    public ResponseEntity<?> remover(Integer id)
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> remover(@PathVariable Integer id)
     {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
         if(funcionario.isPresent())

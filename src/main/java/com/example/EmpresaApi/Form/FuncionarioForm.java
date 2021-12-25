@@ -21,11 +21,8 @@ public class FuncionarioForm
     private String funcaoFuncionario;
     @NotNull @NotEmpty
     private String cpf;
-    @NotNull @NotEmpty
-    private Cargo cargo;
-    @NotNull @NotEmpty
-    private Double salario;
-
+    //@NotNull @NotEmpty
+    //private Double salario;
 
     public String getNomeFuncionario() {
         return nomeFuncionario;
@@ -39,20 +36,34 @@ public class FuncionarioForm
     public void setFuncaoFuncionario(String funcaoFuncionario) {
         this.funcaoFuncionario = funcaoFuncionario;
     }
+    /*
+    public Double getSalario() {
+        return salario;
+    }
+    public void setSalario(Double salario) {
+        this.salario = salario;
+    }
+    */
 
-    public Funcionario converterFuncionario(CargoRepository cargoRepository)
+    public String getCpf() {
+        return cpf;
+    }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+    public Funcionario converterFuncionario(Integer id ,CargoRepository cargoRepository)
     {
         Cargo cargo = cargoRepository.findByfuncao(this.funcaoFuncionario);
 
-        return new Funcionario(this.nomeFuncionario, cargo, this.cpf, this.salario);
+        return new Funcionario(id ,this.nomeFuncionario, cargo, this.cpf);
     }
     public Funcionario atualizarFuncionario(Integer id, FuncionarioRepository funcionarioRepository)
     {
         Funcionario funcionario = funcionarioRepository.getById(id);
 
-        funcionario.setCargo(this.cargo);
+        funcionario.setCpf(this.cpf);
+
         return funcionario;
    
-
     }
 }
