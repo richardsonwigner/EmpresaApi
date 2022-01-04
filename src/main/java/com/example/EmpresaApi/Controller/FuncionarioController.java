@@ -52,6 +52,14 @@ public class FuncionarioController
         return funcionario;
     }
 
+    @RequestMapping(path = "Nome/{nome}")
+    public Funcionario listaFuncionarioPorId(@PathVariable("nome") String nome)
+    {
+        Funcionario funcionario = funcionarioRepository.findByNome(nome);
+
+        return funcionario;
+    }
+
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<FuncionarioDto> atualizar(@RequestBody @Valid FuncionarioForm form, @PathVariable Integer id)
