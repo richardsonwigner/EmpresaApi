@@ -1,12 +1,11 @@
 package com.example.EmpresaApi.ControllerDto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.example.EmpresaApi.models.Funcionario;
+
+import org.springframework.data.domain.Page;
 
 import lombok.Data;
 
@@ -40,9 +39,8 @@ public class FuncionarioDto
         this.salario = salario;
     }
 
-    public static List<FuncionarioDto> converter(List<Funcionario> funcionario)
+    public static Page<FuncionarioDto> converter(Page<Funcionario> funcionario)
     {
-
-        return funcionario.stream().map(FuncionarioDto::new).collect(Collectors.toList());
+        return funcionario.map(FuncionarioDto::new);
     }
 }
