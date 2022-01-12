@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+
 import lombok.AllArgsConstructor;
 
 @Entity
@@ -16,7 +17,7 @@ public class Funcionario
 {
     
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	private String nome;
 	private String cpf;
 	private Double salario;
@@ -28,7 +29,7 @@ public class Funcionario
 	{
 
 	}
-	public Funcionario(Integer id ,String nome, Cargo cargo, String cpf)
+	public Funcionario(Long id, String nome, Cargo cargo, String cpf)
 	{
 		this.id = id;
 		this.nome = nome;
@@ -37,11 +38,11 @@ public class Funcionario
 		this.salario = 5000.0;
 	}
    
-    public Integer getId() {
+    public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -51,15 +51,15 @@ public class FuncionarioForm
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
-    public Funcionario converterFuncionario(Integer id ,CargoRepository cargoRepository)
+    public Funcionario criarFuncionario(Long id, CargoRepository cargoRepository)
     {
         Cargo cargo = cargoRepository.findByfuncao(this.funcaoFuncionario);
 
         return new Funcionario(id ,this.nomeFuncionario, cargo, this.cpf);
     }
-    public Funcionario atualizarFuncionario(Integer id, FuncionarioRepository funcionarioRepository)
+    public Funcionario atualizarFuncionario(Long id, FuncionarioRepository funcionarioRepository)
     {
-        Funcionario funcionario = funcionarioRepository.getById(id);
+        Funcionario funcionario = funcionarioRepository.findById(id).get();
 
         funcionario.setCpf(this.cpf);
 

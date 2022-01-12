@@ -1,7 +1,6 @@
 package com.example.EmpresaApi.Controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,6 +14,10 @@ import com.example.EmpresaApi.Repository.FuncionarioRepository;
 import com.example.EmpresaApi.models.Funcionario;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,15 +40,15 @@ public class FuncionarioController
     private CargoRepository cargoRepository;
 
     @GetMapping
-    public List<Funcionario> listarFuncionarios()
+    public Page<Funcionario> listarFuncionarios(@PageableDefault(sort = "salario", direction = Direction.ASC, page = 0, size = 10) Pageable pageable)
     {
-        List<Funcionario> funcionarios = funcionarioRepository.findAll();
+        Page<Funcionario> funcionarios = funcionarioRepository.findAll(pageable);
         
         return funcionarios;
     }
     
     @GetMapping("/{id}")
-    public Optional<Funcionario> listaFuncionarioPorId(@PathVariable Integer id)
+    public Optional<Funcionario> listaFuncionarioPorId(@PathVariable Long id)
     {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
 
@@ -62,7 +65,7 @@ public class FuncionarioController
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<FuncionarioDto> atualizar(@RequestBody @Valid FuncionarioForm form, @PathVariable Integer id)
+    public ResponseEntity<FuncionarioDto> atualizar(@RequestBody @Valid FuncionarioForm form, @PathVariable Long id)
     {
         Funcionario funcionario = form.atualizarFuncionario(id, funcionarioRepository);
 
@@ -76,12 +79,10 @@ public class FuncionarioController
     @PostMapping
     @Transactional
     public ResponseEntity<FuncionarioDto> cadastrar(@RequestBody @Valid FuncionarioForm funcionarioForm, UriComponentsBuilder uriBuilder)
-    {   
-        List<Funcionario> funcionarios = funcionarioRepository.findAll();
+    {  
+        Long qtdFuncionarios = funcionarioRepository.count();
 
-        Integer idFuncionario = 1 + funcionarios.size();
-
-        Funcionario funcionario = funcionarioForm.converterFuncionario(idFuncionario, cargoRepository);
+        Funcionario funcionario = funcionarioForm.criarFuncionario(qtdFuncionarios + 1, cargoRepository);
 
         funcionarioRepository.save(funcionario);
 
@@ -92,7 +93,7 @@ public class FuncionarioController
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> remover(@PathVariable Integer id)
+    public ResponseEntity<?> remover(@PathVariable Long id)
     {
         Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
         if(funcionario.isPresent())
